@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FD vs SIP — Kaun Behtar Hai?</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f0ede6;
+  --card: #ffffff;
+  --ink: #1c1917;
+  --muted: #78716c;
+  --rule: #e7e2da;
+  --fd: #b91c1c;
+  --fd-light: #fef2f2;
+  --fd-mid: #fecaca;
+  --sip: #1d4ed8;
+  --sip-light: #eff6ff;
+  --sip-mid: #bfdbfe;
+  --green: #15803d;
+  --green-light: #f0fdf4;
+  --orange: #c2410c;
+  --orange-light: #fff7ed;
+  --font: 'Baloo 2', 'Noto Sans Devanagari', sans-serif;
+  --body: 'Noto Sans', 'Noto Sans Devanagari', sans-serif;
+}
+
+body {
+  background: var(--bg);
+  font-family: var(--body);
+  color: var(--ink);
+  min-height: 100vh;
+  padding: 24px 16px 60px;
+}
+
+/* ─── Lang ─── */
+.lang-bar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.lang-btn {
+  font-family: var(--font);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 16px;
+  border: 2px solid var(--rule);
+  background: white;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 20px;
+  transition: all 0.18s;
+}
+.lang-btn.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: white;
+}
+
+/* ─── Header ─── */
+.header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.header h1 {
+  font-family: var(--font);
+  font-size: clamp(1.8rem, 6vw, 2.8rem);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.15;
+}
+.header h1 .vs {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 0.7em;
+  vertical-align: middle;
+  padding: 0 6px;
+}
+.header .tagline {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* ─── Wrapper ─── */
+.wrap { max-width: 880px; margin: 0 auto; }
+
+/* ─── Card ─── */
+.card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 20px 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  border: 1px solid var(--rule);
+}
+
+/* ─── Common params ─── */
+.section-title {
+  font-family: var(--font);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.params-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 28px;
+}
+@media (max-width: 560px) {
+  .params-grid { grid-template-columns: 1fr; gap: 14px; }
+}
+
+/* ─── Field ─── */
+.field { }
+.field-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+.field-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.field-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.field-hint {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ─── Sliders ─── */
+input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--rule);
+  outline: none;
+  cursor: pointer;
+  margin: 6px 0 2px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: transform 0.1s;
+}
+input[type=range]:active::-webkit-slider-thumb { transform: scale(1.2); }
+
+.fd-range::-webkit-slider-thumb  { background: var(--fd); }
+.sip-range::-webkit-slider-thumb { background: var(--sip); }
+.com-range::-webkit-slider-thumb { background: var(--ink); }
+
+/* ─── Two columns ─── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 600px) {
+  .two-col { grid-template-columns: 1fr; }
+}
+
+/* ─── Panel cards ─── */
+.fd-card  { border-top: 4px solid var(--fd);  background: var(--fd-light); }
+.sip-card { border-top: 4px solid var(--sip); background: var(--sip-light); }
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+}
+.panel-name {
+  font-family: var(--font);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.fd-card  .panel-name { color: var(--fd); }
+.sip-card .panel-name { color: var(--sip); }
+
+.panel-desc {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.risk-pill {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+.fd-card  .risk-pill { background: var(--fd-mid); color: var(--fd); }
+.sip-card .risk-pill { background: var(--sip-mid); color: var(--sip); }
+
+/* ─── Result rows ─── */
+.results { margin-top: 14px; }
+.result-sep {
+  border: none;
+  border-top: 1px dashed rgba(0,0,0,0.1);
+  margin: 8px 0;
+}
+.r-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  font-size: 0.82rem;
+}
+.r-lbl { color: var(--muted); }
+.r-num { font-weight: 600; font-variant-numeric: tabular-nums; }
+.r-row.big .r-lbl { font-size: 0.85rem; font-weight: 600; color: var(--ink); }
+.r-row.big .r-num { font-size: 1.15rem; font-weight: 700; }
+.fd-card  .r-row.big .r-num { color: var(--fd); }
+.sip-card .r-row.big .r-num { color: var(--sip); }
+
+/* ─── Inflation box ─── */
+.infl-box {
+  margin-top: 12px;
+  background: rgba(194,65,12,0.06);
+  border: 1px solid rgba(194,65,12,0.15);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.infl-box-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--orange);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.infl-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.79rem;
+  padding: 4px 0;
+  border-bottom: 1px dotted rgba(194,65,12,0.12);
+}
+.infl-row:last-child { border-bottom: none; }
+.infl-lbl { color: var(--muted); }
+.infl-num { font-weight: 600; font-variant-numeric: tabular-nums; }
+.good { color: var(--green); }
+.bad  { color: var(--fd); }
+.warn { color: var(--orange); }
+
+/* ─── BP bar ─── */
+.bp-wrap { margin-top: 10px; }
+.bp-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.bp-track {
+  height: 10px;
+  background: rgba(0,0,0,0.07);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.bp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), #86efac);
+  border-radius: 6px;
+  transition: width 0.45s ease;
+}
+.bp-fill.low {
+  background: linear-gradient(90deg, var(--fd), var(--orange));
+}
+
+/* ─── Compare card ─── */
+.compare-card { background: #fafaf7; }
+.compare-title {
+  font-family: var(--font);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+/* ─── Verdict ─── */
+.verdict {
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 0.83rem;
+  line-height: 1.7;
+  margin-bottom: 18px;
+  border-left: 4px solid;
+}
+.verdict.sip-wins { border-color: var(--sip); background: var(--sip-light); }
+.verdict.fd-wins  { border-color: var(--fd);  background: var(--fd-light); }
+.verdict.tie      { border-color: var(--muted); background: #f5f5f4; }
+
+/* ─── CAGR cards ─── */
+.cagr-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 16px 0 20px;
+}
+@media (max-width: 400px) { .cagr-cards { grid-template-columns: 1fr; } }
+
+.cagr-card {
+  background: white;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.cagr-label { font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
+.cagr-num { font-size: 1.35rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.cagr-sub { font-size: 0.67rem; color: var(--muted); margin-top: 3px; }
+.beat-badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 8px;
+  margin-top: 5px;
+  border: 1px solid;
+}
+.beat-badge.beat { background: var(--green-light); color: var(--green); border-color: var(--green); }
+.beat-badge.edge { background: var(--orange-light); color: var(--orange); border-color: var(--orange); }
+.beat-badge.lose { background: var(--fd-light); color: var(--fd); border-color: var(--fd); }
+
+/* ─── Bar chart ─── */
+.bar-section { margin-top: 6px; }
+.bar-section-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin: 12px 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px dotted var(--rule);
+}
+.bar-row {
+  display: grid;
+  grid-template-columns: 40px 1fr 100px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.bar-name { text-align: right; font-size: 0.7rem; font-weight: 700; color: var(--muted); }
+.bar-track {
+  height: 20px;
+  background: rgba(0,0,0,0.05);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.45s ease;
+  min-width: 3px;
+}
+.fd-nom  { background: var(--fd); opacity: 0.75; }
+.fd-real { background: var(--fd); opacity: 0.3; }
+.sip-nom  { background: var(--sip); opacity: 0.8; }
+.sip-real { background: var(--sip); opacity: 0.35; }
+.bar-val { font-size: 0.75rem; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bar-val.fd { color: var(--fd); }
+.bar-val.sip { color: var(--sip); }
+.bar-val.dim { color: var(--muted); }
+
+/* ─── Footnote ─── */
+.footnote {
+  font-size: 0.68rem;
+  color: var(--muted);
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--rule);
+  line-height: 1.7;
+}
+
+/* ─── Emoji tooltip helper ─── */
+.tip {
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 3px;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Lang -->
+  <div class="lang-bar">
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">English</button>
+    <button class="lang-btn" id="btn-hi" onclick="setLang('hi')">हिन्दी</button>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <h1 id="h-title">FD <span class="vs">vs</span> SIP</h1>
+    <div class="tagline" id="h-sub">Apka paisa 10 saal baad kitna banega?</div>
+  </div>
+
+  <!-- Common Params -->
+  <div class="card">
+    <div class="section-title" id="lbl-common">🔧 Ek baar set karo (dono ke liye)</div>
+    <div class="params-grid">
+      <div class="field">
+        <div class="field-top">
+          <span class="field-label" id="lbl-years">⏳ Kitne Saal?</span>
+          <span class="field-value" id="years-val">10 saal</span>
+        </div>
+        <input type="range" class="com-range" id="years" min="1" max="30" value="10" oninput="update()">
+        <div class="field-hint" id="hint-years">Jitna zyada samay, utna zyada fayda</div>
+      </div>
+      <div class="field">
+        <div class="field-top">
+          <span class="field-label" id="lbl-inflation">📈 Mehangai (Inflation)</span>
+          <span class="field-value" id="inflation-val">6.0%</span>
+        </div>
+        <input type="range" class="com-range" id="inflation" min="2" max="12" step="0.5" value="6" oninput="update()">
+        <div class="field-hint" id="hint-inflation">Har saal cheezon ke daam kitna badhta hai — India mein ~5–7%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FD + SIP panels -->
+  <div class="two-col">
+
+    <!-- FD -->
+    <div class="card fd-card">
+      <div class="panel-header">
+        <div>
+          <div class="panel-name" id="fd-title">🏦 Fixed Deposit</div>
+          <div class="panel-desc" id="fd-tag">Ek baar pura paisa dalo · Bank guarantee</div>
+        </div>
+        <div class="risk-pill" id="fd-risk">Safe</div>
+      </div>
+
+      <div class="field">
+        <div class="field-top">
+          <span class="field-label" id="lbl-fd-amt">💰 FD mein daaloge kitna?</span>
+          <span class="field-value" id="fd-amount-val">₹5.00 L</span>
+        </div>
+        <input type="range" class="fd-range" id="fd-amount" min="10000" max="5000000" step="10000" value="500000" oninput="update()">
+        <div class="field-hint" id="hint-fd-amt">Shuruat mein ek baar bank mein jama karo</div>
+      </div>
+
+      <div class="field">
+        <div class="field-top">
+          <span class="field-label" id="lbl-fd-rate">📊 Bank ka byaaj (interest) %</span>
+          <span class="field-value" id="fd-rate-val">7.0%</span>
+        </div>
+        <input type="range" class="fd-range" id="fd-rate" min="4" max="10" step="0.1" value="7" oninput="update()">
+        <div class="field-hint" id="hint-fd-rate">Abhi zyaadatar banks 6.5–8.25% de rahe hain</div>
+      </div>
+
+      <div class="field">
+        <div class="field-top">
+          <span class="field-label" id="lbl-fd-comp">🔄 Byaaj kab jode?</span>
+          <span class="field-value" id="fd-comp-val">Har 3 mahine</span>
+        </div>
+        <input type="range" class="fd-range" id="fd-comp" min="0" max="3" step="1" value="2" oninput="update()">
+        <div class="field-hint" id="hint-fd-comp">Jitni baar jode, utna thoda zyada milta hai</div>
+      </div>
+
+      <div class="results">
+        <div class="r-row">
+          <span class="r-lbl" id="lbl-fd-princ2">Tumhara paisa (jama kiya)</span>
+          <span class="r-num" id="fd-principal">—</span>
+        </div>
+        <div class="r-row">
+          <span class="r-lbl" id="lbl-fd-interest">Bank ne diya byaaj</span>
+          <span class="r-num" id="fd-interest">—</span>
+        </div>
+        <hr class="result-sep">
+        <div class="r-row big">
+          <span class="r-lbl" id="lbl-fd-mat">Maturity pe milega</span>
+          <span class="r-num" id="fd-maturity">—</span>
+        </div>
+
+        <!-- Inflation box -->
+        <div class="infl-box">
+          <div class="infl-box-title" id="lbl-infl-impact">🔥 Mehangai ka asar</div>
+          <div class="infl-row">
+            <span class="infl-lbl" id="lbl-fd-nom-cagr">Kaghaz pe return</span>
+            <span class="infl-num" id="fd-nominal-cagr">—</span>
+          </div>
+          <div class="infl-row">
+            <span class="infl-lbl" id="lbl-fd-real-cagr">Asli kamai (mehangai hataake)</span>
+            <span class="infl-num" id="fd-real-cagr">—</span>
+          </div>
+          <div class="infl-row">
+            <span class="infl-lbl" id="lbl-fd-pp-loss">Kitni kharid-shakti ghayi</span>
+            <span class="infl-num bad" id="fd-pp-loss">—</span>
+          </div>
+          <div class="infl-row">
+            <span class="infl-lbl" id="lbl-fd-real-val">Aaj ke hisaab se yahi paisa hai</span>
+            <span class="infl-num" id="fd-real">—</span>
+          </div>
+          <div class="infl-row">
+            <span class="infl-lbl" id="lbl-fd-real-gain">Asli faayda ya ghata</span>
+            <span class="infl-num" id="fd-real-gain">—</span>
+          </div>
+          <div class="bp-wrap">
+            <div class="bp-label-row">
+              <span id="lbl-bp-100">Aaj ₹100 lagaya, kal kitna?</span>
+              <span id="fd-bp-val" style="font-weight:700">—</span>
+            </div>
+            <div class="bp-track">
+              <div class="bp-fill" id="fd-bp-bar" style="width:50%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIP -->
+    <div class="card sip-card">
+      <div class="panel-header">
+        <div>
+          <div class="panel-name" id="sip-title">📈 SIP – Mutual Fund</div>
+          <div class="panel-desc" id="sip-tag">Har mahine thoda thoda · Market se juda</div>
+        </div>
+        <div class="risk-pill" id="sip-risk">Thoda Risk</div>
+      </div>
+
+      <div class="field">
+        <div class="field-top">
+          <span class="field-label" id="lbl-sip-amt">💸 Har mahine kitna lagaoge?</span>
+          <span class="field-value" id="sip-amount-val">₹10,000/mah</span>
+        </div>
+        <input type="range" class="sip-range" id="sip-amount" min="500" max="100000" step="500" value="10000" oninput="update()">
+        <div class="field-hint" id="hint-sip-amt">Bank se apne aap katta hai — mushkil nahi</div>
+      </div>
+
+      <div class="field">
+        <div class="field-top">
+          <span class="field-label" id="lbl-sip-rate">📊 Market se kitna return ummeed?</span>
+          <span class="field-value" id="sip-rate-val">12.0%</span>
+        </div>
+        <input type="range" class="sip-range" id="sip-rate" min="6" max="20" step="0.5" value="12" oninput="update()">
+        <div class="field-hint" id="hint-sip-rate">Nifty 50 ne pichle 20 saal mein lagbhag 12–14% diya</div>
+      </div>
+
+      <div class="field">
+        <div class="field-top">
+          <span class="field-label" id="lbl-stepup">🚀 Har saal SIP badhao?</span>
+          <span class="field-value" id="stepup-val">0%</span>
+        </div>
+        <input type="range" class="sip-range" id="stepup" min="0" max="25" step="1" value="0" oninput="update()">
+        <div class="field-hint" id="hint-stepup">Jaise salary bade, SIP bhi badha do — bahut fark padta hai</div>
+      </div>
+
+      <div class="results">
+        <div class="r-row">
+          <span class="r-lbl" id="lbl-sip-invested">Tumhara lagaya paisa (total)</span>
+          <span class="r-num" id="sip-invested">—</span>
+        </div>
+        <div class="r-row">
+          <span class="r-lbl" id="lbl-sip-gain">Market se kamaya</span>
+          <span class="r-num" id="sip-gain">—</span>
+        </div>
+        <hr class="result-sep">
+        <div class="r-row big">
+          <span class="r-lbl" id="lbl-sip-corpus">Aakhir mein milega</span>
+          <span class="r-num" id="sip-corpus">—</span>
+        </div>
+
+        <!-- Inflation box -->
+        <div class="infl-box">
+          <div class="infl-box-title" id="lbl-infl-impact2">🔥 Mehangai ka asar</div>
+          <div class="infl-row">
+            <span class="infl-lbl" id="lbl-sip-nom-cagr">Kaghaz pe return</span>
+            <span class="infl-num" id="sip-nominal-cagr">—</span>
+          </div>
+          <div class="infl-row">
+            <span class="infl-lbl" id="lbl-sip-real-cagr">Asli kamai (mehangai hataake)</span>
+            <span class="infl-num" id="sip-real-cagr">—</span>
+          </div>
+          <div class="infl-row">
+            <span class="infl-lbl" id="lbl-sip-pp-loss">Kitni kharid-shakti ghayi</span>
+            <span class="infl-num bad" id="sip-pp-loss">—</span>
+          </div>
+          <div class="infl-row">
+            <span class="infl-lbl" id="lbl-sip-real-val">Aaj ke hisaab se yahi paisa hai</span>
+            <span class="infl-num" id="sip-real">—</span>
+          </div>
+          <div class="infl-row">
+            <span class="infl-lbl" id="lbl-sip-real-gain">Asli faayda ya ghata</span>
+            <span class="infl-num" id="sip-real-gain">—</span>
+          </div>
+          <div class="bp-wrap">
+            <div class="bp-label-row">
+              <span id="lbl-bp-100-sip">Aaj ₹100 lagaya, kal kitna?</span>
+              <span id="sip-bp-val" style="font-weight:700">—</span>
+            </div>
+            <div class="bp-track">
+              <div class="bp-fill" id="sip-bp-bar" style="width:50%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compare -->
+  <div class="card compare-card">
+    <div class="compare-title" id="lbl-compare">⚖️ Kaun Behtar Raha?</div>
+
+    <div class="verdict" id="verdict"></div>
+
+    <!-- CAGR cards -->
+    <div class="cagr-cards">
+      <div class="cagr-card">
+        <div class="cagr-label" id="lbl-rc-fd">Fixed Deposit</div>
+        <div class="cagr-num" id="rc-fd-cagr" style="color:var(--fd)">—</div>
+        <div class="cagr-sub" id="lbl-rc-cagr1">asli sawdha har saal</div>
+        <div><span class="beat-badge" id="rc-fd-badge">—</span></div>
+      </div>
+      <div class="cagr-card">
+        <div class="cagr-label" id="lbl-rc-sip">SIP — Mutual Fund</div>
+        <div class="cagr-num" id="rc-sip-cagr" style="color:var(--sip)">—</div>
+        <div class="cagr-sub" id="lbl-rc-cagr2">asli sawdha har saal</div>
+        <div><span class="beat-badge" id="rc-sip-badge">—</span></div>
+      </div>
+    </div>
+
+    <div class="bar-section">
+      <div class="bar-section-title" id="lbl-bar-nom">Aage milne wala paisa (kaghaz pe)</div>
+      <div class="bar-row">
+        <div class="bar-name">FD</div>
+        <div class="bar-track"><div class="bar-fill fd-nom" id="fd-bar-nom" style="width:50%"></div></div>
+        <div class="bar-val fd" id="fd-bar-nom-val">—</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-name">SIP</div>
+        <div class="bar-track"><div class="bar-fill sip-nom" id="sip-bar-nom" style="width:80%"></div></div>
+        <div class="bar-val sip" id="sip-bar-nom-val">—</div>
+      </div>
+
+      <div class="bar-section-title" id="lbl-bar-real">Aaj ke hisaab se asli keemat</div>
+      <div class="bar-row">
+        <div class="bar-name">FD</div>
+        <div class="bar-track"><div class="bar-fill fd-real" id="fd-bar-real" style="width:40%"></div></div>
+        <div class="bar-val dim" id="fd-bar-real-val">—</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-name">SIP</div>
+        <div class="bar-track"><div class="bar-fill sip-real" id="sip-bar-real" style="width:60%"></div></div>
+        <div class="bar-val dim" id="sip-bar-real-val">—</div>
+      </div>
+    </div>
+
+    <p class="footnote" id="lbl-footnote">
+      ⚠️ FD mein ek baar pura paisa lagta hai; SIP mein har mahine thoda thoda — dono alag kaam ke liye hain, sidha tulna theek nahi. SIP market se juda hai, return pakki nahi. Tax aur exit load yahan shamil nahi. "Asli return" mehangai hataakar nikala jata hai — Fisher equation: (1+nominal)/(1+inflation)−1.
+    </p>
+  </div>
+
+</div>
+
+<script>
+// ── Translations ──
+const T = {
+  en: {
+    langLabel: 'Language',
+    hTitle: 'FD vs SIP',
+    hSub: 'How much will your money grow in 10 years?',
+    commonLabel: '🔧 Set Once (for both)',
+    lblYears: '⏳ For How Many Years?',
+    hintYears: 'Longer you wait, more you gain',
+    lblInflation: '📈 Inflation (Price Rise)',
+    hintInflation: 'How much costlier things get every year — India avg 5–7%',
+    fdTitle: '🏦 Fixed Deposit',
+    fdTag: 'Put money once · Bank guarantees return',
+    fdRisk: 'Safe',
+    lblFdAmt: '💰 How Much Are You Depositing?',
+    hintFdAmt: 'Deposit this amount once in the bank',
+    lblFdRate: '📊 Bank Interest Rate %',
+    hintFdRate: 'Most banks currently offer 6.5–8.25%',
+    lblFdComp: '🔄 Interest Added When?',
+    hintFdComp: 'More frequently added = slightly more money',
+    compOpts: ['Every Year','Every 6 Months','Every 3 Months','Every Month'],
+    lblFdPrinc2: 'Your deposit',
+    lblFdInterest: 'Interest from bank',
+    lblFdMat: 'You Get at Maturity',
+    lblInflImpact: '🔥 Effect of Price Rise (Inflation)',
+    lblFdNomCagr: 'Return on paper',
+    lblFdRealCagr: 'Real earnings (after inflation)',
+    lblFdPpLoss: 'Buying power lost',
+    lblFdRealVal: 'Worth in today\'s money',
+    lblFdRealGain: 'Real profit or loss',
+    lblBp100: '₹100 invested today, worth later →',
+    sipTitle: '📈 SIP – Mutual Fund',
+    sipTag: 'Small amount every month · Linked to market',
+    sipRisk: 'Some Risk',
+    lblSipAmt: '💸 How Much Per Month?',
+    hintSipAmt: 'Auto-deducted from bank — easy to manage',
+    lblSipRate: '📊 Expected Return from Market?',
+    hintSipRate: 'Nifty 50 gave ~12–14% over last 20 years',
+    lblStepup: '🚀 Increase SIP Every Year?',
+    hintStepup: 'As salary grows, grow your SIP too — big difference!',
+    lblSipInvested: 'Your total money put in',
+    lblSipGain: 'Earned from market',
+    lblSipCorpus: 'Total at the End',
+    lblInflImpact2: '🔥 Effect of Price Rise (Inflation)',
+    lblSipNomCagr: 'Return on paper',
+    lblSipRealCagr: 'Real earnings (after inflation)',
+    lblSipPpLoss: 'Buying power lost',
+    lblSipRealVal: 'Worth in today\'s money',
+    lblSipRealGain: 'Real profit or loss',
+    lblBp100Sip: '₹100 invested today, worth later →',
+    lblCompare: '⚖️ Who Won?',
+    lblRcFd: 'Fixed Deposit',
+    lblRcSip: 'SIP — Mutual Fund',
+    lblRcCagr1: 'real profit per year',
+    lblRcCagr2: 'real profit per year',
+    lblBarNom: 'Money you get (on paper)',
+    lblBarReal: 'Real worth in today\'s money',
+    yrs: (n) => n + ' yr' + (n !== 1 ? 's' : ''),
+    mo: '/mo',
+    beat: '✅ Beats Inflation',
+    edge: '🟡 Just above inflation',
+    lose: '❌ Falls behind inflation',
+    verdFdLose: (fdRate, infl, fdAmt, fdReal) =>
+      `Your FD <strong>loses buying power</strong> — at ${fdRate}%, the interest doesn't keep up with ${infl}% inflation. You put in <strong>${fdAmt}</strong> but by maturity it's only worth <strong style="color:var(--orange)">${fdReal}</strong> in today's money. Inflation ate into your savings.`,
+    verdFdOk: (pct, yrs, cagr) =>
+      `FD <strong>just about holds its value</strong> — real return of <strong style="color:var(--green)">+${pct}%</strong> over ${yrs} years (about ${cagr}% per year after inflation). Good for keeping money safe, not great for growing it.`,
+    verdSipOk: (pct, real, inv) =>
+      `SIP gives <strong style="color:var(--sip)">+${pct}% real return</strong> — your money genuinely grows even after inflation. Final value in today's money: <strong>${real}</strong>, compared to <strong>${inv}</strong> you put in.`,
+    verdSipLose: (rate, infl) =>
+      `SIP at ${rate}% also struggles against ${infl}% inflation here. Try increasing the return assumption or investing for a longer period.`,
+    footnote: '⚠️ FD needs a lump sum; SIP is monthly — they serve different needs, not directly comparable. SIP returns are market-linked, not guaranteed. Tax and exit load not included. Real return = (1+nominal)/(1+inflation)−1.',
+  },
+  hi: {
+    langLabel: 'भाषा',
+    hTitle: 'FD बनाम SIP',
+    hSub: 'आपका पैसा 10 साल बाद कितना बनेगा?',
+    commonLabel: '🔧 एक बार सेट करो (दोनों के लिए)',
+    lblYears: '⏳ कितने साल के लिए?',
+    hintYears: 'जितना ज़्यादा समय, उतना ज़्यादा फ़ायदा',
+    lblInflation: '📈 महंगाई (Inflation)',
+    hintInflation: 'हर साल चीज़ें कितनी महंगी होती हैं — भारत में औसत 5–7%',
+    fdTitle: '🏦 फिक्स्ड डिपॉजिट (FD)',
+    fdTag: 'एक बार पूरा पैसा दो · बैंक की गारंटी',
+    fdRisk: 'सुरक्षित',
+    lblFdAmt: '💰 FD में कितना डालोगे?',
+    hintFdAmt: 'शुरुआत में एक बार बैंक में जमा करो',
+    lblFdRate: '📊 बैंक का ब्याज %',
+    hintFdRate: 'अभी ज़्यादातर बैंक 6.5–8.25% दे रहे हैं',
+    lblFdComp: '🔄 ब्याज कब जोड़ें?',
+    hintFdComp: 'जितनी बार जोड़ें, थोड़ा ज़्यादा मिलता है',
+    compOpts: ['साल में एक बार','हर 6 महीने','हर 3 महीने','हर महीने'],
+    lblFdPrinc2: 'तुम्हारा जमा किया पैसा',
+    lblFdInterest: 'बैंक का ब्याज',
+    lblFdMat: 'मैच्योरिटी पर मिलेगा',
+    lblInflImpact: '🔥 महंगाई का असर',
+    lblFdNomCagr: 'कागज़ पर रिटर्न',
+    lblFdRealCagr: 'असली कमाई (महंगाई हटाकर)',
+    lblFdPpLoss: 'खरीद-शक्ति कितनी घटी',
+    lblFdRealVal: 'आज के हिसाब से यही पैसा है',
+    lblFdRealGain: 'असली फ़ायदा या घाटा',
+    lblBp100: 'आज ₹100 लगाया, बाद में कितना? →',
+    sipTitle: '📈 SIP – म्यूचुअल फंड',
+    sipTag: 'हर महीने थोड़ा-थोड़ा · बाज़ार से जुड़ा',
+    sipRisk: 'थोड़ा जोखिम',
+    lblSipAmt: '💸 हर महीने कितना लगाओगे?',
+    hintSipAmt: 'बैंक से अपने आप कटता है — आसान है',
+    lblSipRate: '📊 बाज़ार से कितना रिटर्न चाहते हो?',
+    hintSipRate: 'Nifty 50 ने पिछले 20 साल में लगभग 12–14% दिया',
+    lblStepup: '🚀 हर साल SIP बढ़ाओ?',
+    hintStepup: 'जैसे तनख्वाह बढ़े, SIP भी बढ़ाओ — बहुत फ़र्क पड़ता है',
+    lblSipInvested: 'तुम्हारा कुल लगाया पैसा',
+    lblSipGain: 'बाज़ार से कमाया',
+    lblSipCorpus: 'आखिर में मिलेगा',
+    lblInflImpact2: '🔥 महंगाई का असर',
+    lblSipNomCagr: 'कागज़ पर रिटर्न',
+    lblSipRealCagr: 'असली कमाई (महंगाई हटाकर)',
+    lblSipPpLoss: 'खरीद-शक्ति कितनी घटी',
+    lblSipRealVal: 'आज के हिसाब से यही पैसा है',
+    lblSipRealGain: 'असली फ़ायदा या घाटा',
+    lblBp100Sip: 'आज ₹100 लगाया, बाद में कितना? →',
+    lblCompare: '⚖️ कौन बेहतर रहा?',
+    lblRcFd: 'फिक्स्ड डिपॉजिट',
+    lblRcSip: 'SIP — म्यूचुअल फंड',
+    lblRcCagr1: 'असली फ़ायदा हर साल',
+    lblRcCagr2: 'असली फ़ायदा हर साल',
+    lblBarNom: 'मिलने वाला पैसा (कागज़ पर)',
+    lblBarReal: 'आज के हिसाब से असली कीमत',
+    yrs: (n) => n + ' साल',
+    mo: '/माह',
+    beat: '✅ महंगाई को पछाड़ा',
+    edge: '🟡 महंगाई से थोड़ा ऊपर',
+    lose: '❌ महंगाई से पीछे',
+    verdFdLose: (fdRate, infl, fdAmt, fdReal) =>
+      `आपका FD <strong>खरीद-शक्ति खो रहा है</strong> — ${fdRate}% ब्याज ${infl}% महंगाई से पीछे है। आपने <strong>${fdAmt}</strong> लगाए, पर मैच्योरिटी पर यह आज के हिसाब से सिर्फ <strong style="color:var(--orange)">${fdReal}</strong> रह जाता है। महंगाई ने पैसा खा लिया।`,
+    verdFdOk: (pct, yrs, cagr) =>
+      `FD <strong>मुश्किल से मूल्य बचाता है</strong> — ${yrs} साल में असली रिटर्न <strong style="color:var(--green)">+${pct}%</strong> (लगभग ${cagr}% हर साल महंगाई हटाकर)। पैसा सुरक्षित रखने के लिए ठीक है, पर अमीर बनने के लिए नहीं।`,
+    verdSipOk: (pct, real, inv) =>
+      `SIP <strong style="color:var(--sip)">+${pct}% असली रिटर्न</strong> देता है — महंगाई के बाद भी पैसा सच में बढ़ता है। आज के हिसाब से कुल: <strong>${real}</strong>, जबकि लगाया था <strong>${inv}</strong>।`,
+    verdSipLose: (rate, infl) =>
+      `${rate}% पर SIP भी ${infl}% महंगाई को यहाँ नहीं पछाड़ पा रहा। रिटर्न बढ़ाएं या ज़्यादा साल के लिए निवेश करें।`,
+    footnote: '⚠️ FD में एकमुश्त पैसा लगता है; SIP मासिक होता है — दोनों अलग काम के लिए हैं, सीधी तुलना सही नहीं। SIP रिटर्न बाज़ार पर निर्भर है, गारंटी नहीं। Tax और exit load यहाँ शामिल नहीं। असली रिटर्न = (1+nominal)/(1+inflation)−1।',
+  }
+};
+
+let lang = 'en';
+const compOpts = [{n:1},{n:2},{n:4},{n:12}];
+
+function setLang(l) {
+  lang = l;
+  document.getElementById('btn-en').classList.toggle('active', l === 'en');
+  document.getElementById('btn-hi').classList.toggle('active', l === 'hi');
+  const t = T[l];
+  const map = {
+    'h-title': 'hTitle', 'h-sub': 'hSub',
+    'lbl-common': 'commonLabel',
+    'lbl-years': 'lblYears', 'hint-years': 'hintYears',
+    'lbl-inflation': 'lblInflation', 'hint-inflation': 'hintInflation',
+    'fd-title': 'fdTitle', 'fd-tag': 'fdTag', 'fd-risk': 'fdRisk',
+    'lbl-fd-amt': 'lblFdAmt', 'hint-fd-amt': 'hintFdAmt',
+    'lbl-fd-rate': 'lblFdRate', 'hint-fd-rate': 'hintFdRate',
+    'lbl-fd-comp': 'lblFdComp', 'hint-fd-comp': 'hintFdComp',
+    'lbl-fd-princ2': 'lblFdPrinc2', 'lbl-fd-interest': 'lblFdInterest',
+    'lbl-fd-mat': 'lblFdMat',
+    'lbl-infl-impact': 'lblInflImpact',
+    'lbl-fd-nom-cagr': 'lblFdNomCagr', 'lbl-fd-real-cagr': 'lblFdRealCagr',
+    'lbl-fd-pp-loss': 'lblFdPpLoss', 'lbl-fd-real-val': 'lblFdRealVal',
+    'lbl-fd-real-gain': 'lblFdRealGain', 'lbl-bp-100': 'lblBp100',
+    'sip-title': 'sipTitle', 'sip-tag': 'sipTag', 'sip-risk': 'sipRisk',
+    'lbl-sip-amt': 'lblSipAmt', 'hint-sip-amt': 'hintSipAmt',
+    'lbl-sip-rate': 'lblSipRate', 'hint-sip-rate': 'hintSipRate',
+    'lbl-stepup': 'lblStepup', 'hint-stepup': 'hintStepup',
+    'lbl-sip-invested': 'lblSipInvested', 'lbl-sip-gain': 'lblSipGain',
+    'lbl-sip-corpus': 'lblSipCorpus',
+    'lbl-infl-impact2': 'lblInflImpact2',
+    'lbl-sip-nom-cagr': 'lblSipNomCagr', 'lbl-sip-real-cagr': 'lblSipRealCagr',
+    'lbl-sip-pp-loss': 'lblSipPpLoss', 'lbl-sip-real-val': 'lblSipRealVal',
+    'lbl-sip-real-gain': 'lblSipRealGain', 'lbl-bp-100-sip': 'lblBp100Sip',
+    'lbl-compare': 'lblCompare',
+    'lbl-rc-fd': 'lblRcFd', 'lbl-rc-sip': 'lblRcSip',
+    'lbl-rc-cagr1': 'lblRcCagr1', 'lbl-rc-cagr2': 'lblRcCagr2',
+    'lbl-bar-nom': 'lblBarNom', 'lbl-bar-real': 'lblBarReal',
+    'lbl-footnote': 'footnote',
+  };
+  for (const [id, key] of Object.entries(map)) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = t[key];
+  }
+  document.documentElement.lang = l === 'hi' ? 'hi' : 'en';
+  update();
+}
+
+function fmt(n) {
+  const abs = Math.abs(n);
+  let s;
+  if (abs >= 1e7)      s = '₹' + (abs/1e7).toFixed(2) + ' Cr';
+  else if (abs >= 1e5) s = '₹' + (abs/1e5).toFixed(2) + ' L';
+  else                 s = '₹' + Math.round(abs).toLocaleString('en-IN');
+  return s;
+}
+
+function fmtSigned(n) {
+  return (n >= 0 ? '+' : '−') + fmt(Math.abs(n));
+}
+
+function realCagr(nomPct, inflPct) {
+  return ((1 + nomPct/100) / (1 + inflPct/100) - 1) * 100;
+}
+
+function sipNomCagrApprox(corpus, invested, years) {
+  if (invested <= 0 || corpus <= 0 || years <= 0) return 0;
+  return (Math.pow(corpus / invested, 1 / years) - 1) * 100;
+}
+
+function calcFD(principal, rate, compN, years) {
+  return principal * Math.pow(1 + (rate/100/compN), compN * years);
+}
+
+function calcSIP(monthly, rate, years, stepup) {
+  const mr = rate / 100 / 12;
+  let corpus = 0, invested = 0, cur = monthly;
+  for (let y = 0; y < years; y++) {
+    for (let m = 0; m < 12; m++) {
+      corpus = (corpus + cur) * (1 + mr);
+      invested += cur;
+    }
+    if (stepup > 0) cur *= (1 + stepup / 100);
+  }
+  return { corpus, invested };
+}
+
+function realVal(nominal, inflation, years) {
+  return nominal / Math.pow(1 + inflation / 100, years);
+}
+
+function setEl(id, txt) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = txt;
+}
+
+function setHtml(id, html) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = html;
+}
+
+function update() {
+  const t = T[lang];
+  const years     = +document.getElementById('years').value;
+  const inflation = +document.getElementById('inflation').value;
+  const fdAmt     = +document.getElementById('fd-amount').value;
+  const fdRate    = +document.getElementById('fd-rate').value;
+  const compIdx   = +document.getElementById('fd-comp').value;
+  const sipAmt    = +document.getElementById('sip-amount').value;
+  const sipRate   = +document.getElementById('sip-rate').value;
+  const stepup    = +document.getElementById('stepup').value;
+
+  const comp = compOpts[compIdx];
+
+  // Display values
+  setEl('years-val', t.yrs(years));
+  setEl('inflation-val', inflation.toFixed(1) + '%');
+  setEl('fd-amount-val', fmt(fdAmt));
+  setEl('fd-rate-val', fdRate.toFixed(1) + '%');
+  setEl('fd-comp-val', t.compOpts[compIdx]);
+  setEl('sip-amount-val', fmt(sipAmt) + t.mo);
+  setEl('sip-rate-val', sipRate.toFixed(1) + '%');
+  setEl('stepup-val', stepup > 0 ? '+' + stepup + '%' : '0%');
+
+  // ─── FD ───
+  const fdMat      = calcFD(fdAmt, fdRate, comp.n, years);
+  const fdInterest = fdMat - fdAmt;
+  const fdReal     = realVal(fdMat, inflation, years);
+  const fdRealGain = fdReal - fdAmt;
+  const fdRealCagrPct  = realCagr(fdRate, inflation);
+  const fdPPLoss       = (1 - fdReal / fdMat) * 100;
+  const fdBpPer100     = (fdReal / fdAmt) * 100;
+
+  setEl('fd-principal', fmt(fdAmt));
+  setEl('fd-interest', fmt(fdInterest));
+  setEl('fd-maturity', fmt(fdMat));
+  setEl('fd-nominal-cagr', fdRate.toFixed(1) + '%');
+
+  const fdRcEl = document.getElementById('fd-real-cagr');
+  fdRcEl.textContent = (fdRealCagrPct >= 0 ? '+' : '') + fdRealCagrPct.toFixed(2) + '%';
+  fdRcEl.className = 'infl-num ' + (fdRealCagrPct > 0 ? 'good' : 'bad');
+
+  setEl('fd-pp-loss', '−' + fdPPLoss.toFixed(1) + '%');
+  setEl('fd-real', fmt(fdReal));
+
+  const fdRgEl = document.getElementById('fd-real-gain');
+  fdRgEl.textContent = fmtSigned(fdRealGain);
+  fdRgEl.className = 'infl-num ' + (fdRealGain >= 0 ? 'good' : 'bad');
+
+  document.getElementById('fd-bp-bar').style.width = Math.min(fdBpPer100 / 2, 100) + '%';
+  document.getElementById('fd-bp-bar').className = 'bp-fill' + (fdBpPer100 < 100 ? ' low' : '');
+  setEl('fd-bp-val', '₹' + fdBpPer100.toFixed(1));
+
+  // ─── SIP ───
+  const { corpus: sipCorpus, invested: sipInvested } = calcSIP(sipAmt, sipRate, years, stepup);
+  const sipGainNom     = sipCorpus - sipInvested;
+  const sipReal        = realVal(sipCorpus, inflation, years);
+  const sipRealGain    = sipReal - sipInvested;
+  const sipNomCagrPct  = sipNomCagrApprox(sipCorpus, sipInvested, years);
+  const sipRealCagrPct = realCagr(sipNomCagrPct, inflation);
+  const sipPPLoss      = (1 - sipReal / sipCorpus) * 100;
+  const sipBpPer100    = (sipReal / sipInvested) * 100;
+
+  setEl('sip-invested', fmt(sipInvested));
+  setEl('sip-gain', fmt(sipGainNom));
+  setEl('sip-corpus', fmt(sipCorpus));
+  setEl('sip-nominal-cagr', sipNomCagrPct.toFixed(1) + '%');
+
+  const sipRcEl = document.getElementById('sip-real-cagr');
+  sipRcEl.textContent = (sipRealCagrPct >= 0 ? '+' : '') + sipRealCagrPct.toFixed(2) + '%';
+  sipRcEl.className = 'infl-num ' + (sipRealCagrPct > 0 ? 'good' : 'bad');
+
+  setEl('sip-pp-loss', '−' + sipPPLoss.toFixed(1) + '%');
+  setEl('sip-real', fmt(sipReal));
+
+  const sipRgEl = document.getElementById('sip-real-gain');
+  sipRgEl.textContent = fmtSigned(sipRealGain);
+  sipRgEl.className = 'infl-num ' + (sipRealGain >= 0 ? 'good' : 'bad');
+
+  document.getElementById('sip-bp-bar').style.width = Math.min(sipBpPer100 / 2, 100) + '%';
+  document.getElementById('sip-bp-bar').className = 'bp-fill' + (sipBpPer100 < 100 ? ' low' : '');
+  setEl('sip-bp-val', '₹' + sipBpPer100.toFixed(1));
+
+  // ─── CAGR cards ───
+  setEl('rc-fd-cagr', (fdRealCagrPct >= 0 ? '+' : '') + fdRealCagrPct.toFixed(2) + '%');
+  setEl('rc-sip-cagr', (sipRealCagrPct >= 0 ? '+' : '') + sipRealCagrPct.toFixed(2) + '%');
+
+  document.getElementById('rc-fd-cagr').style.color = fdRealCagrPct >= 0 ? 'var(--green)' : 'var(--fd)';
+  document.getElementById('rc-sip-cagr').style.color = sipRealCagrPct >= 0 ? 'var(--green)' : 'var(--fd)';
+
+  function badge(rcPct) {
+    if (rcPct > 1) return { cls: 'beat', lbl: t.beat };
+    if (rcPct > 0) return { cls: 'edge', lbl: t.edge };
+    return { cls: 'lose', lbl: t.lose };
+  }
+  const fb = badge(fdRealCagrPct), sb = badge(sipRealCagrPct);
+  const fbEl = document.getElementById('rc-fd-badge');
+  const sbEl = document.getElementById('rc-sip-badge');
+  fbEl.textContent = fb.lbl; fbEl.className = 'beat-badge ' + fb.cls;
+  sbEl.textContent = sb.lbl; sbEl.className = 'beat-badge ' + sb.cls;
+
+  // ─── Bars ───
+  const maxNom  = Math.max(fdMat, sipCorpus, 1);
+  const maxReal = Math.max(fdReal, sipReal, 1);
+  document.getElementById('fd-bar-nom').style.width   = (fdMat     / maxNom  * 100) + '%';
+  document.getElementById('sip-bar-nom').style.width  = (sipCorpus / maxNom  * 100) + '%';
+  document.getElementById('fd-bar-real').style.width  = (fdReal    / maxReal * 100) + '%';
+  document.getElementById('sip-bar-real').style.width = (sipReal   / maxReal * 100) + '%';
+  setEl('fd-bar-nom-val',   fmt(fdMat));
+  setEl('sip-bar-nom-val',  fmt(sipCorpus));
+  setEl('fd-bar-real-val',  fmt(fdReal));
+  setEl('sip-bar-real-val', fmt(sipReal));
+
+  // ─── Verdict ───
+  const verd = document.getElementById('verdict');
+  const fdRealPct  = (fdReal / fdAmt - 1) * 100;
+  const sipRealPct = (sipReal / sipInvested - 1) * 100;
+
+  let html = '';
+  if (fdRealGain < 0) {
+    html += t.verdFdLose(fdRate.toFixed(1), inflation.toFixed(1), fmt(fdAmt), fmt(fdReal));
+  } else {
+    html += t.verdFdOk(fdRealPct.toFixed(1), years, fdRealCagrPct.toFixed(2));
+  }
+  html += '<br><br>';
+  if (sipRealGain > 0) {
+    html += t.verdSipOk(sipRealPct.toFixed(1), fmt(sipReal), fmt(sipInvested));
+  } else {
+    html += t.verdSipLose(sipRate.toFixed(1), inflation.toFixed(1));
+  }
+  verd.innerHTML = html;
+  verd.className = 'verdict ' + (sipReal > fdReal ? 'sip-wins' : (fdReal > sipReal ? 'fd-wins' : 'tie'));
+}
+
+update();
+</script>
+</body>
+</html>
